@@ -1,0 +1,88 @@
+TUTORIAL:
+
+Linux and the serial port
+--------------------------------------------------------
+
+by Dr. Juan Gonzalez Gomez. (C) January, 2009
+
+GPL License
+---------------------------------------------------------
+The complete tutorial can be found in this link (in Spanish):
+
+http://www.iearobotics.com/wiki/index.php?title=Tutorial:Puerto_serie_en_Linux
+
+but the source code is written in English.
+-----------------------------------------------------------
+
+INTRODUCTION
+ In this tutorial you will find 2 useful examples on how to use the serial
+port under Linux to communicate with external devices. The serial.c module
+includes the functions for opening the serial port, reading, writing and
+closing. The two examples use these functions.
+
+
+REQUIREMENTS
+  The examples have been tested under a GNU/Linux Debian/Lenny Box. A pic
+based microcontroller board has been used for testing the examples. It runs
+a firmware for echoing all the incoming data. Therefore, the examples can
+read back the information that is sent to the serial port. The examples use
+9600 baud as the communication speed
+  
+COMPILATION
+  Just type make and all the examples will be compiled
+  
+LINUX SERIAL DEVICES NAMES  
+  
+  In linux, the serial devices names are:                                   
+                                                                            
+    /dev/ttyS0  --> First native serial port                                
+    /dev/ttyS1  --> Second native serial port                               
+    ...                                                                     
+    /dev/ttyUSB0  --> First USB-RS232 converter                             
+    /dev/ttyUSB1  --> Second USB-RS232 converter                            
+    ...                                                                       
+  
+------------------------------------  
+EXAMPLE 1: send_receive
+------------------------------------
+ This example sends a ASCII string to the serial port and it waits for the
+same string to be echoed back by an external device  (For example a 
+microcontroller running an echo-firmware or a wire joining the PC tx and 
+rx pins). The received string is print on the screen. If no data is received         */
+during the TIMEOUT time, a timeout message is printed 
+                     
+Example of use:                                                           
+                                     
+   ./send_receive /dev/ttyUSB0                                              
+                                                                            
+  The serial device name should be passed as a parameter                    
+  When executing this example, if the echoed data is received the           
+  output will be the following:                                             
+                                                                            
+    String sent------> ASCII Command test                                   
+    String received--> ASCII Command test (18 bytes)                        
+                                                                            
+  If no data is received, the output will be:                               
+    String sent------> ASCII Command test                                   
+    String received--> Timeout!                                             
+                                            
+------------------------------------  
+EXAMPLE 2: term
+------------------------------------
+ Example of Serial communications in Linux. 
+ 
+This example is a mini serial communication terminal. All the            
+characters typed by the user are sent throw the serial port and all the  
+characters received by the serial port are printed on the screen.        
+
+Example of use:
+
+ ./term /dev/ttyUSB0                                             
+                                                                          
+  Press the ESC key to quit the mini-terminal.
+  
+
+
+
+
+                                            
