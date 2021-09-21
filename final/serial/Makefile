@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------
-# Dr. Juan Gonzalez-Gomez. January 2009                          
+# Mario Moisés Ramírez Tobar                         
 #------------------------------------------------------------------------------
 # GPL LICENSE                                                               
 #------------------------------------------------------------------------------
@@ -7,14 +7,14 @@
 CC = gcc
 CFLAGS =  -Iserial
 
-#-- Serial library
+#-- Librería serial
 SERIAL = serial.o
 
-#-- Example: send_receive
+#-- Ejemplo: send_receive
 NAME1 = send_receive
 DEP1 = send_receive_ex/$(NAME1).o 
 
-#-- Example: term
+#-- Ejemplo: term
 NAME2 = term
 DEP2 = term_ex/$(NAME2).o term_ex/console_io.o
 
@@ -32,7 +32,7 @@ clean::
 	  rm -f $(SERIAL) *.bak *~
 
 #---------------------------
-#-- Example: send_receive
+#-- Ejemplo: send_receive
 #---------------------------
 $(NAME1): $(DEP1) $(SERIAL)
 	$(CC) -o $(NAME1) $(DEP1) $(SERIAL)
@@ -41,7 +41,7 @@ clean::
 	  rm -f $(NAME1) $(DEP1) *.bak *~
 
 #-------------------------------
-#-- Example: term
+#-- Ejemplo: term
 #-------------------------------
 $(NAME2): $(DEP2) $(SERIAL)
 	$(CC) -o $(NAME2) $(DEP2) $(SERIAL)

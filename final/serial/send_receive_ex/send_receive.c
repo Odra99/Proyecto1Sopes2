@@ -1,42 +1,33 @@
 /******************************************************************************/
-/* send_receive.c   Dr. Juan Gonzalez Gomez. January 2009                     */
+/* send_receive.c   Mario Moisés Ramírez Tobar                                */
 /*----------------------------------------------------------------------------*/
-/* Example of Serial communications in Linux.                                 */
-/* Sending and receiving data strings                                         */
+/* Ejemplo de comunicación con un serial en linux                             */
+/* reciviendo data                                                            */
 /*----------------------------------------------------------------------------*/
 /* GPL LICENSE                                                                */
 /*----------------------------------------------------------------------------*/
-/* This example sends a ASCII string to the serial port. It waits for the     */
-/* same string to be echoed by another device (For example a microcontroller  */
-/* running an echo-firmware or a wire joining the PC tx and rx pins           */
-/* The received string is print on the screen. If no data is received         */
-/* during the TIMEOUT time, a timeout message is printed                      */
+/* Espera en un loop, la comunicación del pulsador, que espera cada milesima  */
+/* y si hay una pulsación proboca una interrupción en el irq                  */
 /*                                                                            */
-/* The serial port speed is configured to 9600 baud                           */
 /*----------------------------------------------------------------------------*/
-/* Example of use:                                                            */
+/* Ejemplo de uso:                                                            */
 /*                                                                            */
 /*   ./send_receive /dev/ttyUSB0                                              */
 /*                                                                            */
-/*  The serial device name should be passed as a parameter                    */
-/*  When executing this example, if the echoed data is received the           */
 /*  output will be the following:                                             */
 /*                                                                            */
-/*    String sent------> ASCII Command test                                   */
-/*    String received--> ASCII Command test (18 bytes)                        */
+/*    (1bit)                                                                  */
 /*                                                                            */
 /*  If no data is received, the output will be:                               */
-/*    String sent------> ASCII Command test                                   */
-/*    String received--> Timeout!                                             */
+/*                                                                            */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/*  In linux, the serial devices names are:                                   */
+/*  En linux, el nombre de los dispositivos seriales                          */
 /*                                                                            */
 /*    /dev/ttyS0  --> First native serial port                                */
 /*    /dev/ttyS1  --> Second native serial port                               */
 /*    ...                                                                     */
-/*    /dev/ttyUSB0  --> First USB-RS232 converter                             */
-/*    /dev/ttyUSB1  --> Second USB-RS232 converter                            */
+/*    /dev/ttyUSB0  --> Primer Convertidor USB-RS232                          */
 /*    ...                                                                     */
 /******************************************************************************/
 
@@ -52,13 +43,12 @@
 //-- CONSTANTS
 //------------------
 
-//-- ASCII string to send through the serial port
 #define CMD       "a"
 
-//-- ASCII String length
+//-- tamaño de la información obtenida
 #define CMD_LEN   1
 
-//--TIMEOUT in micro-sec (It is set to 1 sec in this example)
+//--TIMEOUT in micro-segundos (Esta puesto en 1/10 segundos en este ejemplo)
 #define TIMEOUT 100000
 
 
@@ -67,47 +57,39 @@
 /**********************/
 int main (int argc, char* argv[])
 {
-  int serial_fd;           //-- Serial port descriptor
-  char data[CMD_LEN+1];    //-- The received command
+  int serial_fd;           //-- Descripción del puerto serial
+  char data[CMD_LEN+1];    //-- La data recivida
   
-  //-- Check if the serial device name is given
+  //-- Verificar si el nombre del dispositivo esta disponible
   if (argc<2) {
     printf ("No serial device name is given\n");
     exit(0);
   }
 
-  //-- Open the serial port
-  //-- The speed is configure at 9600 baud
+  //-- Abrir el puerto serial
+  //-- La rapidez esta configurada en 9600 baudios
   serial_fd=serial_open(argv[1],B9600);
   
-  //-- Error checking
+  //-- Chequeo de errores
   if (serial_fd==-1) {
     printf ("Error opening the serial device: %s\n",argv[1]);
     perror("OPEN");
     exit(0);
   }
  while(1==1){
-  //-- Send the command to the serial port
-  /*serial_send(serial_fd, CMD, CMD_LEN);
-  printf ("String sent------> %s\n",CMD);*/
   
-  //-- Wait for the received data
+  //-- Esperar por la data a recibir
   int n;
   n=serial_read(serial_fd,data,CMD_LEN,TIMEOUT);
   
-  //-- Show the received data
-  //printf ("String received--> \n");
-  //fflush(stdout);
   if (n>0) {
+  //-- Mostrar la data recibida
     printf ("(%d bytes)\n",n);
     usleep(TIMEOUT);
   }
-  else {
-    //printf ("Timeout!\n");
-  }
  }
   
-  //-- Close the serial port
+  //-- Cerrar el puerto serial
   serial_close(serial_fd);
 
   return 0;

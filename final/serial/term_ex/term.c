@@ -1,5 +1,5 @@
 /****************************************************************************/
-/* term.c   Dr. Juan Gonzalez Gomez. January 2009                           */
+/* term.c   Mario Moisés Ramírez Tobar                                      */
 /*--------------------------------------------------------------------------*/
 /* Example of Serial communications in Linux.                               */
 /* Mini serial communication terminal                                       */

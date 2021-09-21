@@ -1,7 +1,7 @@
 /******************************************************************/
-/* serial.c   Dr. Juan Gonzalez Gomez. January, 2009              */
+/* serial.c   Mario Moisés Ramírez Tobar                          */
 /*----------------------------------------------------------------*/
-/* Serial communications in Linux                                 */
+/* Comunicación serial en linux                                   */
 /*----------------------------------------------------------------*/
 /* GPL LICENSE                                                    */
 /******************************************************************/
@@ -14,30 +14,19 @@
 #include <sys/select.h>
 
 
-/******************************************************************************/
-/* Open the serial port                                                       */
-/*----------------------------------------------------------------------------*/
-/* INPUT:                                                                     */
-/*   -serial_name: Serial device name                                         */
-/*   -baud: Serial speed. The constants Bxxxx are used, were xxxx  is the     */ 
-/*          speed. They are defined in termios.h. For example: B9600, B19200..*/
-/*          For more information type "man termios"                           */
-/*                                                                            */
-/* RETURNS:                                                                   */
-/*   -The Serial device descriptor  (-1 if there is an error)                 */
-/******************************************************************************/
+
 int serial_open(char *serial_name, speed_t baud)
 {
   struct termios newtermios;
   int fd;
 
-  // Open the serial port
+  // Abriendo el puerto serial
   fd = open(serial_name,O_RDWR | O_NOCTTY); 
 
-  // Configure the serial port attributes: 
-  //   -- No parity
+  // Configurar los atributos del puerto serial: 
+  //   -- No paridad
   //   -- 8 data bits
-  //   -- other things...
+  //   -- entre otras...
   newtermios.c_cflag= CBAUD | CS8 | CLOCAL | CREAD;
   newtermios.c_iflag=IGNPAR;
   newtermios.c_oflag=0;
@@ -45,7 +34,7 @@ int serial_open(char *serial_name, speed_t baud)
   newtermios.c_cc[VMIN]=1;
   newtermios.c_cc[VTIME]=0;
 
-  // Set the speed
+  // setear la velocidad
   cfsetospeed(&newtermios,baud);
   cfsetispeed(&newtermios,baud);
   
