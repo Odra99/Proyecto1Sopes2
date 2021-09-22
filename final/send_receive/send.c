@@ -76,68 +76,44 @@ int main(){
         exit(1);
     }
     printf("Hecho!!!\n");
-    clock_t start_t, end_t;
+    
+    //Codigo de memoria compartida
+    void *shared_memory; //memoria de cuantas veces se ha precionado
+    void *shared_memory2; //memoria de fecha de la ultima vez que se presiono
+    clock_t start_t, end_t, int_t;
+    int start = 0;
+    int shmid;
     while(1) {
-
 		if(check){
 			int i;
-			void *shared_memory; //memoria de cuantas veces se ha precionado
-			void *shared_memory2; //memoria de fecha de la ultima vez que se presiono
-			int presionado;
-			int shmid;
-			int shmid2;
-
+			int presionado; //numero de veces que se ha presionado
 			int bool1=0;
-
-			time_t now;
-			struct tm *ts;
-			char buf[80];
-
 			/* Obtener el tiempo de ahora */
 			end_t=clock();
-			now = time(NULL);
-			/* Formato y escritura del tiempo, "hh:mm:ss" */
-			ts = localtime(&now);
-			strftime(buf, sizeof(buf), "%H:%M:%S", ts);
-			shmid=shmget((key_t)2345, 1024, 0666);
-			shmid2=shmget((key_t)2346, 1024, 0666);
+            //Obtener la memoria compartida
+			shmid=shmget((key_t)2222, 1024, 0666);
 			printf("Key of shared memory is %d\n",shmid);
 			if(shmid==-1){
-				shmid=shmget((key_t)2345, 1024, 0666|IPC_CREAT);
+				shmid=shmget((key_t)2222, 1024, 0666|IPC_CREAT);
 				bool1=1;
 			}
-			if(shmid2==-1){
-				shmid=shmget((key_t)2346, 1024, 0666|IPC_CREAT);
-			}
-
-			if(bool1){
+			if(bool1){ //primera vez que se presiona
 				shared_memory=shmat(shmid,NULL,0); //proceso adjunto al segmento de memoria compartida
 				presionado = 1;
 				char a[2] ;
 				*a= presionado+'0';
 				strcpy(shared_memory,a);
 				printf("You wrote : %s\n",(char *)shared_memory);
-				//shared_memory2=shmat(shmid2,NULL,0); //proceso adjunto al segmento de memoria compartida
-				//strcpy(shared_memory2,buf);
-				//printf("You wrote : %s\n",(char *)shared_memory2);
-			}else{
+			}else{ // cuando ya se haya presionado una vez.
 				shared_memory=shmat(shmid,NULL,0);
-				shared_memory2=shmat(shmid2,NULL,0);
 				printf("Found: %s\n",(char *)shared_memory);
-				printf("Found: %s\n",(char *)shared_memory2);
-				struct tm tm;
-				//strptime(shared_memory2, "%H:%M:%S", &tm);
-				//time_t t = mktime(&tm);
-				
-				//struct tm tm2;
-				//strptime(buf, "%H:%M:%S", &tm2);
-				//int sec = tm2.tm_sec - tm.tm_sec;
+                // Visualizar tiempo transcurrido
 				double sec = ((double) (end_t - start_t)) / CLOCKS_PER_SEC;
 				printf("Execution time = %f\n", sec);
 				
 				if(sec >= 3 || sec < 0){
 					presionado = 1;
-				} else if (sec >= 0.5){
+				} else if (sec >= 0.1){
 					if(strcmp(shared_memory, "1") == 0){
 						presionado = 2;
 					} else if (strcmp(shared_memory, "2") == 0){
@@ -152,16 +128,26 @@ int main(){
 				*a= presionado+'0';
 				strcpy(shared_memory,a);
 				printf("You wrote : %s\n",(char *)shared_memory);
-				//shared_memory2=shmat(shmid2,NULL,0); //process attached to shared memory segment
-				//strcpy(shared_memory2,buf);
-				//printf("You wrote : %s\n",(char *)shared_memory2);
 
 			}
 			end:
 			printf("end");	
 			check=!check;
 			start_t = end_t;
+            start = 1;
 		}
+        if(start == 1){
+            int_t = clock();
+            double sec = ((double) (int_t - start_t)) / CLOCKS_PER_SEC;
+            if(sec>=3){
+                char a[2];
+                int press = 0;
+                *a=press+'0';
+				shared_memory=shmat(shmid,NULL,0);
+				strcpy(shared_memory,a);
+				printf("You wrote : %s\n",(char *)shared_memory);
+            }
+        }
     }
     printf("Closing Driver\n");
     close(fd);

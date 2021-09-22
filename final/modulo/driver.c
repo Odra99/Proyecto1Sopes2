@@ -171,7 +171,7 @@ static void __exit etx_driver_exit(void)
 module_init(etx_driver_init);
 module_exit(etx_driver_exit);
  
-//MODULE_LICENSE("GPL");
+MODULE_LICENSE("GPL");
 //MODULE_AUTHOR("EmbeTronicX <embetronicx@gmail.com>");
 //MODULE_DESCRIPTION("A simple device driver - Signals");
 //MODULE_VERSION("1.20");

@@ -6,24 +6,31 @@
 
 int main()
 {
-int i, b;
-void *shared_memory;
-char buff[100];
-int shmid;
+	int i, b;
+	void *shared_memory;
+	int shmid;
+	i=-1;
 	while(1){
-		//Memoria compartida con el id 2345
-		shmid=shmget((key_t)2345, 1024, 0666);
+		//Memoria compartida con el id 2222
+		shmid=shmget((key_t)2222, 1024, 0666);
 		if(shmid==-1){
-			printf("0\n");
-			i=0;
+			if(i==-1){
+				printf("El numero ha sido presionado 0 veces\n");
+				i=0;
+			}
 		}else{
 			shared_memory=shmat(shmid,NULL,0); //proceso adjunto al segmento de memoria compartida
 			// compartir la información
 			b = atoi((char *) shared_memory);
 			if(i != b){
-				printf("El boton ha sido presionado %s vez\n",(char *)shared_memory);
+				if(b==1){
+					printf("El boton ha sido presionado %d vez\n",b);
+				} else {
+					printf("El boton ha sido presionado %d veces\n", b);
+				}
+				i=b;
 			}
 		}
-  		usleep(400000);	
+  		usleep(100000);	
 	}
 }
